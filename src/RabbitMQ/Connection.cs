@@ -1,11 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Web.;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 using System.Web.Script.Serialization;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Framing.v0_8;
 
 namespace RabbitMQ
 {
@@ -14,6 +11,9 @@ namespace RabbitMQ
     [ClassInterface(ClassInterfaceType.AutoDual)]
     public class Connection
     {
+        private const byte Transient = 1;
+        private const byte Persistent = 2;
+
         private IConnection _connection;
         private IModel _channel;
         private JavaScriptSerializer _serializer;
@@ -54,10 +54,13 @@ namespace RabbitMQ
             _channel.QueueBind(queue, exchange, routingKey);
         }
 
-        public void Publish(string exchange, string routingKey, object @object)
+        public void Publish(string exchange, string routingKey, bool persistent, object @object)
         {
-            _channel.BasicPublish(exchange, routingKey, null, 
-                Encoding.UTF8.GetBytes(_serializer.Serialize(@object)));
+            _channel.BasicPublish(exchange, routingKey, new BasicProperties
+            {
+                ContentType = "application/json",
+                DeliveryMode = persistent ? Persistent : Transient
+            }, Encoding.UTF8.GetBytes(_serializer.Serialize(@object)));
         }
 
         public void Disconnect()
