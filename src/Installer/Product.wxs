@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+	<Product 
+    Name="RabbitMQ COM Component" 
+    UpgradeCode="70246f93-30c0-49ce-ad7d-485c5342e847" 
+    Id="9dfce4ad-baa3-4157-a1e8-6a6b9bb2c546" 
+    Language="1033" 
+    Manufacturer="Ultraviolet Catastrophe" 
+    Version="1.0">
+		<Package Keywords="Installer"
+			  Description="RabbitMQ COM Component"
+			  Comments="RabbitMQ COM Component" Manufacturer="Ultraviolet Catastrophe"
+			  InstallerVersion="150" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
+
+		<Property Id="ALLUSERS">1</Property>
+		
+		<Property Id="NET_FRAMEWORK_INSTALLED">
+			<RegistrySearch Id="bffdb5f531" Type="raw"
+			  Root="HKLM" Key="SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full" Name="Install" />
+		</Property>
+
+    <Condition Message=".NET Framework 4.0 is not installed. Please install it and try again.">
+      Installed OR (NET_FRAMEWORK_INSTALLED = "#1" AND NOT Installed)
+    </Condition>
+
+		<Media Id="1" Cabinet="RabbitMQCOMComponent.cab" EmbedCab="yes" />
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder" Name="Program Files">
+
+					<Directory Id="INSTALLDIR" Name="RabbitMQ COM Component">
+
+            <Component Id="d4226d44db" Guid="E041618A-4A8F-4CA1-A2B5-A794A07C61A1">
+              <File Id="fil96BD777ADB4C665E0366CBE4515DA951" KeyPath="yes" Source="..\RabbitMQ\bin\Release\RabbitMQ.dll" />
+              <Class Id="{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}" Context="InprocServer32" Description="RabbitMQ.Connection" ThreadingModel="both" ForeignServer="mscoree.dll">
+                <ProgId Id="UltravioletCatastrophe.RabbitMQ" Description="RabbitMQ.Connection" />
+              </Class>
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\InprocServer32\1.0.0.0" Name="Class" Value="RabbitMQ.Connection" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\InprocServer32\1.0.0.0" Name="Assembly" Value="RabbitMQ, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c7cb57d81f55133" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\InprocServer32\1.0.0.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\InprocServer32\1.0.0.0" Name="CodeBase" Value="file:///[#fil96BD777ADB4C665E0366CBE4515DA951]" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\InprocServer32" Name="Class" Value="RabbitMQ.Connection" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\InprocServer32" Name="Assembly" Value="RabbitMQ, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c7cb57d81f55133" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="CLSID\{8ECF7EBC-BC37-4DD6-BF6E-E6152E543635}\InprocServer32" Name="CodeBase" Value="file:///[#fil96BD777ADB4C665E0366CBE4515DA951]" Type="string" Action="write" />
+              <RegistryValue Root="HKCR" Key="Component Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Name="0" Value=".NET Category" Type="string" Action="write" />
+            </Component>
+
+          </Directory>
+			</Directory>
+			
+		</Directory>
+		
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+		<UIRef Id="WixUI_FeatureTree" />
+
+		<Icon Id="InstallerIcon" SourceFile="Resources\Installer.ico" />
+		<Property Id="ARPPRODUCTICON" Value="InstallerIcon" />
+		
+		<Feature Id="e8145db569" Level="1" Title="RabbitMQ COM Component" Description="Installs the RabbitMQ COM Component.">
+			<ComponentRef Id="d4226d44db" />
+		</Feature>
+
+	</Product>
+</Wix>
