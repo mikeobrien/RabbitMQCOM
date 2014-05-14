@@ -1,7 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.v0_9_1;
+using RabbitMQ.Client.MessagePatterns;
 
 namespace RabbitMQ
 {
@@ -54,7 +56,14 @@ namespace RabbitMQ
         public void Publish(string exchange, string routingKey, bool persistent, string message)
         {
             _channel.BasicPublish(exchange, routingKey, new BasicProperties
-            { DeliveryMode = persistent ? Persistent : Transient }, Encoding.UTF8.GetBytes(message));
+                    { DeliveryMode = persistent ? Persistent : Transient }, 
+                Encoding.UTF8.GetBytes(message));
+        }
+
+        public string Call(string queue, string message)
+        {
+            return Encoding.UTF8.GetString(new SimpleRpcClient(_channel, queue) 
+                { TimeoutMilliseconds = 5000 }.Call(Encoding.UTF8.GetBytes(message)));
         }
 
         public void Disconnect()

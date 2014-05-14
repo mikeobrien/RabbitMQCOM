@@ -12,7 +12,7 @@ using Should;
 namespace Tests
 {
     [TestFixture]
-    public class Tests
+    public class PublishTests
     {
         public class Message
         {
@@ -22,11 +22,11 @@ namespace Tests
         }
 
         [Test]
-        public void should_send_message()
+        public void should_publish_message()
         {
             ClearQueue();
 
-            QueueMessage();
+            PublishMessage();
 
             var message = DequeueMessage();
 
@@ -57,11 +57,11 @@ namespace Tests
             }
         }
 
-        private static void QueueMessage()
+        private static void PublishMessage()
         {
             try
             {
-                new WebClient().DownloadString("http://localhost/RabbitMQTestHarness/rabbitmq.asp");
+                new WebClient().DownloadString("http://localhost/RabbitMQTestHarness/publish.asp");
             }
             catch (WebException exception)
             {
