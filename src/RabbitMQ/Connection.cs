@@ -1,12 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.CustomMarshalers;
-using System.Runtime.InteropServices.Expando;
+﻿using System.Runtime.InteropServices;
 using System.Text;
-using System.Web.Script.Serialization;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.v0_9_1;
 
@@ -58,13 +51,10 @@ namespace RabbitMQ
             _channel.QueueBind(queue, exchange, routingKey);
         }
 
-        public void Publish(string exchange, string routingKey, bool persistent, object @object)
+        public void Publish(string exchange, string routingKey, bool persistent, string message)
         {
             _channel.BasicPublish(exchange, routingKey, new BasicProperties
-            {
-                ContentType = "application/json",
-                DeliveryMode = persistent ? Persistent : Transient
-            }, Encoding.UTF8.GetBytes(ComSerializer.ToJson(@object)));
+            { DeliveryMode = persistent ? Persistent : Transient }, Encoding.UTF8.GetBytes(message));
         }
 
         public void Disconnect()

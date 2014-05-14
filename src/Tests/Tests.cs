@@ -24,6 +24,8 @@ namespace Tests
         [Test]
         public void should_send_message()
         {
+            ClearQueue();
+
             QueueMessage();
 
             var message = DequeueMessage();
@@ -31,6 +33,15 @@ namespace Tests
             message.Name.ShouldEqual("Rod");
             message.Age.ShouldEqual(55);
             message.Birthday.ShouldEqual(new DateTime(1985, 10, 26));
+        }
+
+        private static void ClearQueue()
+        {
+            using (var connection = new ConnectionFactory { Uri = "amqp://localhost/" }.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.QueuePurge("testqueue");
+            }
         }
 
         private static Message DequeueMessage()
